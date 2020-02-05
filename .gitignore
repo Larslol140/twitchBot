@@ -1,0 +1,15 @@
+# QT
+*.user
+*.moc
+moc_*
+*.o
+.qmake.stash
+# *.png
+qrc_images.cpp
+*.autosave
+Makefile
+
+# Project
+twitchBot
+data.db
+testData/
