@@ -59,9 +59,9 @@ void Message::extractJoinLeaveData(QString rawMessage)
   QRegularExpressionMatch match = getRegExpMatch(RE_JOIN_LEAVE, rawMessage);
 
   sender = "SERVER";
-  channel = match.captured(1);
-  status = "";
-  message = match.captured(2);
+  message = "";
+  status = match.captured(1);
+  channel = match.captured(2);
 }
 
 void Message::extractPingPongData(QString rawMessage)

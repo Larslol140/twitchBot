@@ -22,12 +22,13 @@ class Client : public QObject
     Client(QString userName, QString userOauth, QObject *parent = nullptr);
     ~Client();
 
+    Message           *getLastMessage();
     QList<Message *>  getMessages();
     QList<Message *>  getMessagesByUser(QString user);
     QList<Message *>  getMessagesByChannel(QString channel);
 
     QString           getCurrentChannel();
-    QString           getUserName();
+    QString           getClientName();
     bool              getAuthenticated();
     bool              isInChannel();
 
@@ -42,6 +43,10 @@ class Client : public QObject
     void  messageReceived(Message *m);
     void  messageSent(Message *m);
     void  authFailed();
+
+  signals:
+    void  channelChanged();
+    void  messageReceived();
 };
 
 #endif // CLIENT_H

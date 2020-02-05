@@ -36,6 +36,11 @@ Client::~Client()
   }
 }
 
+Message *Client::getLastMessage()
+{
+  return messages.last();
+}
+
 QList<Message *> Client::getMessages()
 {
   return messages;
@@ -66,7 +71,7 @@ QString Client::getCurrentChannel()
   return currentChannel;
 }
 
-QString Client::getUserName()
+QString Client::getClientName()
 {
   return userName;
 }
@@ -93,6 +98,7 @@ void Client::joinChannel(QString channel)
     leaveChannel();
   nh->joinChannel(channel);
   currentChannel = channel;
+  emit channelChanged();
 }
 
 void Client::leaveChannel()
@@ -101,6 +107,7 @@ void Client::leaveChannel()
     return;
   nh->leaveChannel(currentChannel);
   currentChannel = "";
+  emit channelChanged();
 }
 
 void Client::pingServer()
@@ -119,12 +126,14 @@ void Client::login(QString userName, QString userOauth)
 void Client::messageReceived(Message *m)
 {
   messages.append(m);
+  emit messageReceived();
 }
 
 void Client::messageSent(Message *m)
 {
   m->changeSender(userName);
   messages.append(m);
+  emit messageReceived();
 }
 
 void Client::authFailed()
