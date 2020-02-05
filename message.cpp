@@ -30,6 +30,11 @@ QString Message::getSender() const
   return sender;
 }
 
+void Message::changeSender(QString sender)
+{
+  this->sender = sender;
+}
+
 void Message::extractChatData(QString rawMessage)
 {
   QRegularExpressionMatch match = getRegExpMatch(RE_CHAT, rawMessage);

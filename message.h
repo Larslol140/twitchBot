@@ -30,6 +30,8 @@ class Message
     QString getChannel() const;
     QString getMessage() const;
     QString getSender() const;
+
+    void    changeSender(QString sender);
 };
 
 #endif // MESSAGE_H
