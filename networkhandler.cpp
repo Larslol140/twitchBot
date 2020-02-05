@@ -72,10 +72,13 @@ void NetworkHandler::executeAllCommands()
 
 void NetworkHandler::handleRawMessage(QString message)
 {
+  if (message == AUTH_FAILED || message == AUTH_INVALID)
+    emit authFailed();
+
   Message *m = convertToMessage(message);
   if (isServerPing(m))
     sendPong();
-  emit receivedMessage(m);
+  emit messageReceived(m);
 }
 
 void NetworkHandler::handleRawSentMessage(QString message)
@@ -109,7 +112,7 @@ Message *NetworkHandler::convertToMessage(QString message)
 Message *NetworkHandler::makeLikeRecv(QString message, MESSAGE_TYPE type)
 {
   message = MESSAGE_SKEL_CHAT+message;
-  message.replace(":user", "@@SELF@@");
+  message.replace(":user", "SELF");
   return new Message(message, type);
 }
 

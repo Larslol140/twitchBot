@@ -51,8 +51,9 @@ class NetworkHandler : public QObject
     void          sendPing();
 
   signals:
-    void          receivedMessage(Message *);
+    void          messageReceived(Message *);
     void          messageSent(Message *);
+    void          authFailed();
 };
 
 #endif // NETWORKHANDLER_H

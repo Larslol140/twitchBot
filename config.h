@@ -17,6 +17,9 @@ const QString MESSAGE_CHAT  = "PRIVMSG #:channel ::message";
 const QString MESSAGE_JOIN  = "JOIN #:channel";
 const QString MESSAGE_PART  = "PART #:channel";
 
+const QString AUTH_FAILED   = ":tmi.twitch.tv NOTICE * :Improperly formatted auth";
+const QString AUTH_INVALID  = ":tmi.twitch.tv NOTICE * :Login authentication failed";
+
 const QString MESSAGE_SKEL_CHAT = "::user!:user@:user.tmi.twitch.tv ";
 
 const QRegularExpression RE_CHAT(":([\\w]+)\\![\\w]+\\@[\\w]+\\.tmi\\.twitch\\.tv PRIVMSG #([\\w]+) :(.+)");
