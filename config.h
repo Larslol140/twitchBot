@@ -30,5 +30,40 @@ const QRegularExpression RE_COMMAND("\\.([\\w]+)(?: |)([\\w]*)(?: |)(.*)");
 
 const int LAST_MESSAGE_COUNT = 100;
 
+const QString DB_FILE                  = "data.db";
+const QString DB_CREATE_COMMANDS       = "CREATE TABLE commands ("
+                                         "  command_id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                                         "  command_client VARCHAR(64) NOT NULL REFERENCES users(user_name),"
+                                         "  command_channel VARCHAR(64) NOT NULL,"
+                                         "  command_name VARCHAR(255) NOT NULL,"
+                                         "  command_trigger VARCHAR(255) NOT NULL,"
+                                         "  command_response VARCHAR(255) NOT NULL"
+                                         ");";
+const QString DB_CREATE_CLIENTS         = "CREATE TABLE clients ("
+                                        "  client_name VARCHAR(64) NOT NULL PRIMARY KEY,"
+                                        "  client_oauth VARCHAR(255) NOT NULL"
+                                        ");";
+
+const QString DB_SELECT_ALL_COMMANDS  = "SELECT command_id FROM commands;";
+const QString DB_SELECT_COMMANDS      = "SELECT command_id FROM commands "
+                                        "WHERE command_client = :command_client AND command_channel = :command_channel;";
+const QString DB_SELECT_CMD_TRIGGER   = "SELECT command_trigger FROM commands "
+                                        "WHERE command_id = :command_id;";
+const QString DB_SELECT_CMD_RESPONSE  = "SELECT command_response FROM commands "
+                                        "WHERE command_id = :command_id";
+const QString DB_SELECT_CMD_NAME      = "SELECT command_name FROM commands "
+                                        "WHERE command_id = :command_id;";
+const QString DB_ADD_COMMAND          = "INSERT INTO commands(command_user, command_channel, command_name, command_trigger, command_response) "
+                                        "VALUES (:command_user, :command_channel, :command_name, :command_trigger, :command_response);";
+const QString DB_DEL_COMMAND          = "DELETE FROM commands "
+                                        "WHERE command_id = :command_id;";
+
+const QString DB_SELECT_CLIENTS       = "SELECT client_name FROM clients;";
+const QString DB_SELECT_CLIENT_AUTH   = "SELECT client_oauth FROM clients "
+                                        "WHERE client_name = :client_name;";
+const QString DB_ADD_CLIENT           = "INSERT INTO clients(client_name, client_oauth) "
+                                        "VALUES (:client_name, :client_oauth);";
+const QString DB_DEL_CLIENT           = "DELETE FROM clients "
+                                        "WHERE client_name = :client_name";
 
 #endif // CONFIG_H

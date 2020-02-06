@@ -3,6 +3,7 @@ QT += core gui widgets sql network
 HEADERS += \
     client.h \
     config.h \
+    database.h \
     message.h \
     model.h \
     networkhandler.h \
@@ -10,6 +11,7 @@ HEADERS += \
 
 SOURCES += \
     client.cpp \
+    database.cpp \
     main.cpp \
     message.cpp \
     model.cpp \

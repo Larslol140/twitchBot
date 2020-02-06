@@ -52,6 +52,9 @@ class Model : public QObject
     void      sendWithAllClients(QString channel, QString message);
     void      sendWithClients(QList<QString> clientNames, QString channel, QString message);
 
+    void      addCommand(QString command_trigger, QString command_response);
+    void      deleteCommand(QString command_trigger);
+
     QList<QString>  getClients();
 
 

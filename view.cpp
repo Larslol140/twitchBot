@@ -9,6 +9,12 @@ void View::setUpGui()
   lChannel = new QLabel(this);
   lwUsers = new QListWidget(this);
 
+  leCmdTrigger = new QLineEdit(this);
+  leCmdResponse = new QLineEdit(this);
+  pbAddCommand = new QPushButton("Add Command", this);
+  pbDelCommand = new QPushButton("Delete Command", this);
+
+
   teChat->setReadOnly(true);
 
   lClient->setFont(QFont("Arial", 12));
@@ -21,6 +27,15 @@ void View::setUpGui()
   QVBoxLayout *currentUserList = new QVBoxLayout;
   QHBoxLayout *usersChat = new QHBoxLayout;
   QVBoxLayout *messageChat = new QVBoxLayout;
+  QHBoxLayout *commandInputs = new QHBoxLayout;
+  QHBoxLayout *commandOutputs = new QHBoxLayout;
+
+
+  commandInputs->addWidget(leCmdTrigger);
+  commandInputs->addWidget(leCmdResponse);
+
+  commandOutputs->addWidget(pbAddCommand);
+  commandOutputs->addWidget(pbDelCommand);
 
   userChannel->addWidget(lClient);
   userChannel->addWidget(lChannel);
@@ -30,6 +45,8 @@ void View::setUpGui()
 
   currentUserList->addLayout(userChannel);
   currentUserList->addWidget(lwUsers);
+  currentUserList->addLayout(commandInputs);
+  currentUserList->addLayout(commandOutputs);
 
   usersChat->addLayout(messageChat);
   usersChat->addLayout(currentUserList);
@@ -50,6 +67,8 @@ void View::connectComponents()
 
   connect(leMessage, SIGNAL(returnPressed()), this, SLOT(executeCommand()));
   connect(lwUsers, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(changeClient(QListWidgetItem *)));
+  connect(pbAddCommand, SIGNAL(clicked()), this, SLOT(addCommand()));
+  connect(pbDelCommand, SIGNAL(clicked()), this, SLOT(delCommand()));
 }
 
 void View::loadLastMessages()
@@ -140,4 +159,18 @@ void View::executeCommand()
 {
   m->sendMessage(leMessage->text());
   leMessage->clear();
+}
+
+void View::addCommand()
+{
+  m->addCommand(leCmdTrigger->text(), leCmdResponse->text());
+  leCmdTrigger->clear();
+  leCmdResponse->clear();
+}
+
+void View::delCommand()
+{
+  m->deleteCommand(leCmdTrigger->text());
+  leCmdTrigger->clear();
+  leCmdResponse->clear();
 }

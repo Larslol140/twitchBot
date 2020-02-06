@@ -78,6 +78,16 @@ void Model::sendWithClients(QList<QString> clientNames, QString channel, QString
     clients[clientNames[i]]->sendMessage(message);
 }
 
+void Model::addCommand(QString command_trigger, QString command_response)
+{
+  currentClient->addCommand(command_trigger.remove(0, 1), command_trigger, command_response);
+}
+
+void Model::deleteCommand(QString command_trigger)
+{
+  currentClient->deleteCommand(command_trigger);
+}
+
 QString Model::formatChat(Message *m)
 {
   return "["+m->getTime().toString()+"] (CHAT) #"+m->getChannel()+" "+m->getSender()+": "+m->getMessage();

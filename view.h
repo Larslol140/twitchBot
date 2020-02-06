@@ -15,6 +15,10 @@ class View : public QWidget
     QLabel      *lClient;
     QTextEdit   *teChat;
     QLineEdit   *leMessage;
+    QLineEdit   *leCmdTrigger;
+    QLineEdit   *leCmdResponse;
+    QPushButton *pbAddCommand;
+    QPushButton *pbDelCommand;
 
 
     void        setUpGui();
@@ -34,6 +38,9 @@ class View : public QWidget
     void  updateCurrentClient(QString userName);
     void  updateMessages(QString message);
     void  executeCommand();
+
+    void  addCommand();
+    void  delCommand();
 
 };
 

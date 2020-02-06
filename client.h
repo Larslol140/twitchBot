@@ -2,24 +2,31 @@
 #define CLIENT_H
 
 #include "networkhandler.h"
+#include "database.h"
 
 class Client : public QObject
 {
     Q_OBJECT
 
   private:
-    QString userName;
-    QString currentChannel;
-    bool    authenticated;
+    QString           userName;
+    QString           currentChannel;
+    bool              authenticated;
 
-    QList<Message *> messages;
-    NetworkHandler *nh;
+    QList<Message *>  messages;
+    QHash<QString, QString> commands;
+    NetworkHandler    *nh;
+    Database          *db;
 
     void              disconnectNetworkHandler();
     void              connectNetworkHandler(QString userName, QString userOauth);
 
+    void              loadCommands();
+
+    bool              isCommand(QString command);
+
   public:
-    Client(QString userName, QString userOauth, QObject *parent = nullptr);
+    Client(QString userName, QString userOauth, bool database = false, QObject *parent = nullptr);
     ~Client();
 
     Message           *getLastMessage();
@@ -37,7 +44,11 @@ class Client : public QObject
     void              leaveChannel();
     void              pingServer();
 
-    void              login(QString userName, QString userOauth);
+    void              addCommand(QString command_name, QString command_trigger, QString command_response);
+    void              deleteCommand(int command_id);
+    void              deleteCommand(QString command_trigger);
+
+    void              login(QString userName, QString userOauth, bool database);
 
   private slots:
     void  messageReceived(Message *m);

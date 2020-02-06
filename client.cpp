@@ -17,12 +17,27 @@ void Client::connectNetworkHandler(QString userName, QString userOauth)
   connect(nh, SIGNAL(authFailed()), this, SLOT(authFailed()));
 }
 
-Client::Client(QString userName, QString userOauth, QObject *parent) : QObject (parent)
+void Client::loadCommands()
+{
+  commands.clear();
+  QList<int> commandIds = db->getCommands(userName, currentChannel);
+
+  for (int i = 0; i < commandIds.length(); i++)
+    commands[db->getCommandTrigger(commandIds[i])] = db->getCommandResponse(commandIds[i]);
+}
+
+bool Client::isCommand(QString command)
+{
+  return commands.contains(command);
+}
+
+Client::Client(QString userName, QString userOauth, bool database, QObject *parent) : QObject (parent)
 {
   this->userName = userName;
   nh = nullptr;
+  db = Database::getInstance();
   currentChannel = "";
-  login(userName, userOauth);
+  login(userName, userOauth, database);
 }
 
 Client::~Client()
@@ -98,6 +113,7 @@ void Client::joinChannel(QString channel)
     leaveChannel();
   nh->joinChannel(channel);
   currentChannel = channel;
+  loadCommands();
   emit channelChanged();
 }
 
@@ -115,16 +131,39 @@ void Client::pingServer()
   nh->sendPing();
 }
 
-void Client::login(QString userName, QString userOauth)
+void Client::addCommand(QString command_name, QString command_trigger, QString command_response)
+{
+  db->addCommand(userName, currentChannel, command_name, command_trigger, command_response);
+}
+
+void Client::deleteCommand(int command_id)
+{
+  db->deleteCommand(command_id);
+}
+
+void Client::deleteCommand(QString command_trigger)
+{
+  QList<int> commandIds = db->getCommands(userName, currentChannel);
+
+  for (int i = 0; i < commandIds.length(); i++)
+    if (db->getCommandTrigger(commandIds[i]) == command_trigger)
+      db->deleteCommand(commandIds[i]);
+}
+
+void Client::login(QString userName, QString userOauth, bool database)
 {
   if (nh != nullptr)
     disconnectNetworkHandler();
   authenticated = true;
+  if (database)
+    db->addClient(userName, userOauth);
   connectNetworkHandler(userName, userOauth);
 }
 
 void Client::messageReceived(Message *m)
 {
+  if (isInChannel() && isCommand(m->getMessage()))
+    sendMessage(commands[m->getMessage()]);
   messages.append(m);
   emit messageReceived();
 }
@@ -132,6 +171,8 @@ void Client::messageReceived(Message *m)
 void Client::messageSent(Message *m)
 {
   m->changeSender(userName);
+  if (isInChannel() && isCommand(m->getMessage()))
+    sendMessage(commands[m->getMessage()]);
   messages.append(m);
   emit messageReceived();
 }
