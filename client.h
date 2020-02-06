@@ -25,6 +25,8 @@ class Client : public QObject
 
     bool              isCommand(QString command);
 
+    void              sendCommandResponse(QString response);
+
   public:
     Client(QString userName, QString userOauth, bool database = false, QObject *parent = nullptr);
     ~Client();

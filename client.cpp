@@ -134,11 +134,13 @@ void Client::pingServer()
 void Client::addCommand(QString command_name, QString command_trigger, QString command_response)
 {
   db->addCommand(userName, currentChannel, command_name, command_trigger, command_response);
+  loadCommands();
 }
 
 void Client::deleteCommand(int command_id)
 {
   db->deleteCommand(command_id);
+  loadCommands();
 }
 
 void Client::deleteCommand(QString command_trigger)
@@ -148,6 +150,7 @@ void Client::deleteCommand(QString command_trigger)
   for (int i = 0; i < commandIds.length(); i++)
     if (db->getCommandTrigger(commandIds[i]) == command_trigger)
       db->deleteCommand(commandIds[i]);
+  loadCommands();
 }
 
 void Client::login(QString userName, QString userOauth, bool database)

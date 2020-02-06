@@ -5,6 +5,7 @@ Model *Model::instance = nullptr;
 Model::Model(QObject *parent) : QObject (parent)
 {
   currentClient = nullptr;
+  db = Database::getInstance();
 }
 
 bool Model::isClientInList(QString userName)
@@ -19,7 +20,7 @@ bool Model::successfullyAuthenticated(QString userName)
 
 void Model::addClientToList(QString userName, QString userOauth)
 {
-  Client *c = new Client(userName, userOauth);
+  Client *c = new Client(userName, userOauth, true);
   clients[userName] = c;
   setCurrentClient(userName);
   emit clientsChanged(getClients());
@@ -30,8 +31,11 @@ void Model::removeClientFromList(QString userName)
 {
   Client *c = clients[userName];
 
-  disconnect(currentClient, SIGNAL(messageReceived()), this, SLOT(messageReceived()));
-  disconnect(currentClient, SIGNAL(channelChanged()), this, SLOT(channelChanged()));
+  disconnect(c, SIGNAL(messageReceived()), this, SLOT(messageReceived()));
+  disconnect(c, SIGNAL(channelChanged()), this, SLOT(channelChanged()));
+
+  if (currentClient == c)
+    currentClient = nullptr;
 
   delete c;
   c = nullptr;
@@ -64,18 +68,24 @@ QString Model::formatMessage(Message *m)
   }
 }
 
-void Model::sendWithAllClients(QString channel, QString message)
+void Model::sendWithClients(QString message)
 {
-  QList<QString> clientNames = clients.keys();
-  sendWithClients(clientNames, channel, message );
+  for (int i = 0; i < selectedClients.length(); i++)
+    clients[selectedClients[i]]->sendMessage(message);
 }
 
-void Model::sendWithClients(QList<QString> clientNames, QString channel, QString message)
+void Model::sendWithClientsToChannel(QString channel, QString message)
 {
-  for (int i = 0; i < clientNames.length(); i++)
-    clients[clientNames[i]]->joinChannel(channel);
-  for (int i = 0; i < clientNames.length(); i++)
-    clients[clientNames[i]]->sendMessage(message);
+  if (channel == "CURRENT")
+    sendWithClients(message);
+  else
+  {
+    for (int i = 0; i < selectedClients.length(); i++)
+      if (clients[selectedClients[i]]->getCurrentChannel() != channel)
+        clients[selectedClients[i]]->joinChannel(channel);
+    for (int i = 0; i < selectedClients.length(); i++)
+      clients[selectedClients[i]]->sendMessage(message);
+  }
 }
 
 void Model::addCommand(QString command_trigger, QString command_response)
@@ -122,10 +132,24 @@ void Model::changeCurrentClient(QString userName)
   emit channelChanged(currentClient->getCurrentChannel());
 }
 
+void Model::selectAllClients()
+{
+  for (int i = 0; i < clients.keys().length(); i++)
+    selectClient(clients.keys()[i]);
+}
+
 void Model::selectClient(QString userName)
 {
   if (isClientInList(userName))
     addClientToSelection(userName);
+  emit clientsChanged(clients.keys());
+}
+
+void Model::unselectClient(QString userName)
+{
+  if (isClientSelected(userName))
+    selectedClients.removeOne(userName);
+  emit clientsChanged(clients.keys());
 }
 
 void Model::addClientToSelection(QString userName)
@@ -160,24 +184,36 @@ void Model::executeCommand(QString message)
 
   if (command == "addClient")
     addClient(param1, param2);
+  else if (command == "loadClient")
+    loadClient(param1);
+  else if (command == "loadAllClients")
+    loadAllClients();
+  else if (command == "unloadAllClients")
+    unloadAllClients();
   else if (command == "changeClient")
     setCurrentClient(param1);
-  else if (command == "removeClient")
+  else if (command == "unloadClient")
     removeClientFromList(param1);
   else if (command == "join")
     currentClient->joinChannel(param1);
   else if (command == "leave")
     currentClient->leaveChannel();
-  else if (command == "massSend")
-    sendWithAllClients(param1, param2);
   else if (command == "selectedSend")
-    sendWithClients(selectedClients, param1, param2);
+    sendWithClientsToChannel(param1, param2);
+  else if (command == "selectedJoin")
+    joinWithClients(param1);
+  else if (command == "selectedLeave")
+    leaveWithClients();
   else if (command == "ping")
     currentClient->pingServer();
   else if (command == "select")
     selectClient(param1);
   else if (command == "unselect")
     unselectClient(param1);
+  else if (command == "selectAll")
+    selectAllClients();
+  else if (command == "unselectAll")
+    unselectAllClients();
   else
     qDebug().noquote() << "Unkown Command [" << command << "/" << param1 << "|" << param2 << "]";
 }
@@ -202,10 +238,54 @@ void Model::addClient(QString userName, QString userOauth)
     addClientToList(userName, userOauth);
 }
 
+void Model::loadClient(QString userName)
+{
+  if (isClientInDatabase(userName))
+    addClient(userName, db->getClientOauth(userName));
+}
+
+void Model::loadAllClients()
+{
+  QList<QString> clients = db->getClients();
+  for (int i = 0; i < clients.length(); i++)
+    loadClient(clients[i]);
+}
+
 void Model::setCurrentClient(QString userName)
 {
   if (isClientInList(userName))
     changeCurrentClient(userName);
+}
+
+bool Model::isClientInDatabase(QString userName)
+{
+  return db->getClients().contains(userName);
+}
+
+void Model::joinWithClients(QString channel)
+{
+  for (int i = 0; i < selectedClients.length(); i++)
+    clients[selectedClients[i]]->joinChannel(channel);
+}
+
+void Model::leaveWithClients()
+{
+  for (int i = 0; i < selectedClients.length(); i++)
+    clients[selectedClients[i]]->leaveChannel();
+}
+
+void Model::unselectAllClients()
+{
+  int selectedSize = selectedClients.length();
+  for (int i = 0; i < selectedSize; i++)
+    unselectClient(selectedClients.last());
+}
+
+void Model::unloadAllClients()
+{
+  int clientSize = clients.keys().length();
+  for (int i = 0; i < clientSize; i++)
+    removeClientFromList(clients.keys().last());
 }
 
 Client *Model::getCurrentClient()

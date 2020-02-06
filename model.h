@@ -11,6 +11,8 @@ class Model : public QObject
     static Model *instance;
     Model(QObject *parent);
 
+    Database                  *db;
+
     QHash<QString, Client *>  clients;
     QList<QString>            selectedClients;
 
@@ -28,29 +30,40 @@ class Model : public QObject
     QString   formatJoinLeave(Message *m);
 
     void      changeCurrentClient(QString userName);
+    void      selectAllClients();
 
     void      selectClient(QString userName);
     void      unselectClient(QString userName);
     void      addClientToSelection(QString userName);
     void      removeClientFromSelection(QString userName);
-    bool      isClientSelected(QString userName);
 
     bool      messageIsCommand(QString message);
 
     void      executeCommand(QString message);
+    void      addClient(QString userName, QString userOauth);
+    void      loadClient(QString userName);
+    void      loadAllClients();
+
+    bool      isClientInDatabase(QString userName);
+
+    void      joinWithClients(QString channel);
+    void      leaveWithClients();
+
+    void      unselectAllClients();
+    void      unloadAllClients();
 
   public:
     static Model *getInstance(QObject *parent = nullptr);
     ~Model();
 
-    void      addClient(QString userName, QString userOauth);
-    void      setCurrentClient(QString userName);
     Client    *getCurrentClient();
     void      sendMessage(QString message);
     QString   formatMessage(Message *m);
+    void      setCurrentClient(QString userName);
+    bool      isClientSelected(QString userName);
 
-    void      sendWithAllClients(QString channel, QString message);
-    void      sendWithClients(QList<QString> clientNames, QString channel, QString message);
+    void      sendWithClients(QString message);
+    void      sendWithClientsToChannel(QString channel, QString message);
 
     void      addCommand(QString command_trigger, QString command_response);
     void      deleteCommand(QString command_trigger);

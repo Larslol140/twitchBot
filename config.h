@@ -53,8 +53,8 @@ const QString DB_SELECT_CMD_RESPONSE  = "SELECT command_response FROM commands "
                                         "WHERE command_id = :command_id";
 const QString DB_SELECT_CMD_NAME      = "SELECT command_name FROM commands "
                                         "WHERE command_id = :command_id;";
-const QString DB_ADD_COMMAND          = "INSERT INTO commands(command_user, command_channel, command_name, command_trigger, command_response) "
-                                        "VALUES (:command_user, :command_channel, :command_name, :command_trigger, :command_response);";
+const QString DB_ADD_COMMAND          = "INSERT INTO commands(command_client, command_channel, command_name, command_trigger, command_response) "
+                                        "VALUES (:command_client, :command_channel, :command_name, :command_trigger, :command_response);";
 const QString DB_DEL_COMMAND          = "DELETE FROM commands "
                                         "WHERE command_id = :command_id;";
 

@@ -116,9 +116,12 @@ void View::updateChannel(QString channel)
 void View::updateClients(QList<QString> clients)
 {
   lwUsers->clear();
-
   for (int i = 0; i < clients.length(); i++)
+  {
     lwUsers->addItem(clients[i]);
+    if (m->isClientSelected(clients[i]))
+      lwUsers->item(i)->setBackground(Qt::gray);
+  }
 }
 
 void View::updateCurrentClient(QString userName)
