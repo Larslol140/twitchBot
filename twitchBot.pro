@@ -4,10 +4,14 @@ HEADERS += \
     client.h \
     config.h \
     message.h \
-    networkhandler.h
+    model.h \
+    networkhandler.h \
+    view.h
 
 SOURCES += \
     client.cpp \
     main.cpp \
     message.cpp \
-    networkhandler.cpp
+    model.cpp \
+    networkhandler.cpp \
+    view.cpp

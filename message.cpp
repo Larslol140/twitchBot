@@ -42,6 +42,8 @@ void Message::extractChatData(QString rawMessage)
   channel = match.captured(2);
   message = match.captured(3);
   status = "";
+  if (isSlashMe(message))
+    removeSlashMe(message);
 }
 
 void Message::extractStatusData(QString rawMessage)
@@ -79,6 +81,16 @@ void Message::extractUnkownData(QString rawMessage)
   sender = "UNKOWN";
   channel = "UNKOWN";
   status = "UNKOWN";
+}
+
+bool Message::isSlashMe(QString message)
+{
+  return message.contains("\u0001") && message.contains("ACTION");
+}
+
+void Message::removeSlashMe(QString &message)
+{
+  message.replace("\u0001", "").replace("ACTION", "");
 }
 
 QRegularExpressionMatch Message::getRegExpMatch(QRegularExpression regex, QString string)

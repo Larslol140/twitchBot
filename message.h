@@ -19,6 +19,9 @@ class Message
     void          extractPingPongData(QString rawMessage);
     void          extractUnkownData(QString rawMessage);
 
+    bool          isSlashMe(QString message);
+    void          removeSlashMe(QString &message);
+
     QRegularExpressionMatch getRegExpMatch(QRegularExpression regex, QString string);
 
   public:

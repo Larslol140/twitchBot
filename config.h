@@ -26,6 +26,9 @@ const QRegularExpression RE_CHAT(":([\\w]+)\\![\\w]+\\@[\\w]+\\.tmi\\.twitch\\.t
 const QRegularExpression RE_STATUS("(?::[\\w]+|)[:\\.]tmi\\.twitch\\.tv ([\\d]+) \\w+ (?::|)(.+)");
 const QRegularExpression RE_PING_PONG("(PING|PONG) .+");
 const QRegularExpression RE_JOIN_LEAVE(":[\\w]+![\\w]+@[\\w]+\\.tmi\\.twitch\\.tv (JOIN|PART) #([\\w]+)");
+const QRegularExpression RE_COMMAND("\\.([\\w]+)(?: |)([\\w]*)(?: |)(.*)");
+
+const int LAST_MESSAGE_COUNT = 100;
 
 
 #endif // CONFIG_H

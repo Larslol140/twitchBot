@@ -20,7 +20,6 @@ class Model : public QObject
     void      addClientToList(QString userName, QString userOauth);
     void      removeClientFromList(QString userName);
 
-    QString   formatMessage(Message *m);
 
     QString   formatChat(Message *m);
     QString   formatStatus(Message *m);
@@ -29,6 +28,10 @@ class Model : public QObject
 
     void      changeCurrentClient(QString userName);
 
+    bool      messageIsCommand(QString message);
+
+    void      executeCommand(QString message);
+
   public:
     static Model *getInstance(QObject *parent = nullptr);
     ~Model();
@@ -36,12 +39,21 @@ class Model : public QObject
     void      addClient(QString userName, QString userOauth);
     void      setCurrentClient(QString userName);
     Client    *getCurrentClient();
+    void      sendMessage(QString message);
+    QString   formatMessage(Message *m);
+
+    void      sendWithAllClients(QString channel, QString message);
+    void      sendWithClients(QList<QString> clientNames, QString channel, QString message);
+
+    QList<QString>  getClients();
+
 
   private slots:
     void      messageReceived();
     void      channelChanged();
 
   signals:
+    void      clientsChanged(QList<QString>);
     void      clientChanged(QString userName);
     void      messageReceived(QString message);
     void      channelChanged(QString channel);
