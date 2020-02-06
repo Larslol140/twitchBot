@@ -112,6 +112,30 @@ void Model::changeCurrentClient(QString userName)
   emit channelChanged(currentClient->getCurrentChannel());
 }
 
+void Model::selectClient(QString userName)
+{
+  if (isClientInList(userName))
+    addClientToSelection(userName);
+}
+
+void Model::addClientToSelection(QString userName)
+{
+  if (isClientSelected(userName))
+    return;
+  selectedClients.append(userName);
+}
+
+void Model::removeClientFromSelection(QString userName)
+{
+  if (isClientSelected(userName))
+    selectedClients.removeOne(userName);
+}
+
+bool Model::isClientSelected(QString userName)
+{
+  return selectedClients.contains(userName);
+}
+
 bool Model::messageIsCommand(QString message)
 {
   return message.startsWith(".");
@@ -136,8 +160,14 @@ void Model::executeCommand(QString message)
     currentClient->leaveChannel();
   else if (command == "massSend")
     sendWithAllClients(param1, param2);
+  else if (command == "selectedSend")
+    sendWithClients(selectedClients, param1, param2);
   else if (command == "ping")
     currentClient->pingServer();
+  else if (command == "select")
+    selectClient(param1);
+  else if (command == "unselect")
+    unselectClient(param1);
   else
     qDebug().noquote() << "Unkown Command [" << command << "/" << param1 << "|" << param2 << "]";
 }

@@ -11,7 +11,8 @@ class Model : public QObject
     static Model *instance;
     Model(QObject *parent);
 
-    QHash<QString, Client *> clients;
+    QHash<QString, Client *>  clients;
+    QList<QString>            selectedClients;
 
     Client    *currentClient;
 
@@ -27,6 +28,12 @@ class Model : public QObject
     QString   formatJoinLeave(Message *m);
 
     void      changeCurrentClient(QString userName);
+
+    void      selectClient(QString userName);
+    void      unselectClient(QString userName);
+    void      addClientToSelection(QString userName);
+    void      removeClientFromSelection(QString userName);
+    bool      isClientSelected(QString userName);
 
     bool      messageIsCommand(QString message);
 
