@@ -22,6 +22,11 @@ const QString AUTH_INVALID  = ":tmi.twitch.tv NOTICE * :Login authentication fai
 
 const QString MESSAGE_SKEL_CHAT = "::user!:user@:user.tmi.twitch.tv ";
 
+const QString COMMAND_HELP = ".addClient, .loadClient, .loadAllCLients, .unloadAllClients, "
+                             ".changeClient, .unloadClient, .join, .leave, .selectedSend, "
+                             ".selectedJoin, .selectedLeave, .ping, .select, .unselect, "
+                             ".selectAll, .unselectAll, .exit, .help";
+
 const QRegularExpression RE_CHAT(":([\\w]+)\\![\\w]+\\@[\\w]+\\.tmi\\.twitch\\.tv PRIVMSG #([\\w]+) :(.+)");
 const QRegularExpression RE_STATUS("(?::[\\w]+|)[:\\.]tmi\\.twitch\\.tv ([\\d]+) \\w+ (?::|)(.+)");
 const QRegularExpression RE_PING_PONG("(PING|PONG) .+");

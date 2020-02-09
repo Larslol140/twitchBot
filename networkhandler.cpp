@@ -130,6 +130,16 @@ void NetworkHandler::handleRawMessages()
     handleRawMessage(rawMessages[i]);
 }
 
+void NetworkHandler::disconnected()
+{
+  emit messageReceived(new Message("Disconnected", UNKOWN));
+}
+
+void NetworkHandler::connected()
+{
+  emit messageReceived(new Message("Connected", UNKOWN));
+}
+
 NetworkHandler::NetworkHandler(QString userName, QString userOauth, QObject *parent) : QObject (parent)
 {
   commandBeingExecuted = false;
@@ -138,6 +148,8 @@ NetworkHandler::NetworkHandler(QString userName, QString userOauth, QObject *par
   userLogin(userName, userOauth);
 
   connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(handleRawMessages()));
+  connect(tcpSocket, SIGNAL(disconnected()), this, SLOT(disconnected()));
+  connect(tcpSocket, SIGNAL(connected()), this, SLOT(connected()));
 }
 
 NetworkHandler::~NetworkHandler()

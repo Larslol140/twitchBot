@@ -40,6 +40,8 @@ class NetworkHandler : public QObject
 
   private slots:
     void          handleRawMessages();
+    void          disconnected();
+    void          connected();
 
   public:
                   NetworkHandler(QString userName, QString userOauth, QObject *parent = nullptr);

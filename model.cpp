@@ -214,6 +214,10 @@ void Model::executeCommand(QString message)
     selectAllClients();
   else if (command == "unselectAll")
     unselectAllClients();
+  else if (command == "help")
+    commandHelp();
+  else if (command == "exit")
+    qApp->exit();
   else
     qDebug().noquote() << "Unkown Command [" << command << "/" << param1 << "|" << param2 << "]";
 }
@@ -249,6 +253,11 @@ void Model::loadAllClients()
   QList<QString> clients = db->getClients();
   for (int i = 0; i < clients.length(); i++)
     loadClient(clients[i]);
+}
+
+void Model::commandHelp()
+{
+  currentClient->appendMessage(COMMAND_HELP);
 }
 
 void Model::setCurrentClient(QString userName)

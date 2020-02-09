@@ -43,6 +43,7 @@ class Model : public QObject
     void      addClient(QString userName, QString userOauth);
     void      loadClient(QString userName);
     void      loadAllClients();
+    void      commandHelp();
 
     bool      isClientInDatabase(QString userName);
 

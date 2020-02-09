@@ -153,6 +153,13 @@ void Client::deleteCommand(QString command_trigger)
   loadCommands();
 }
 
+void Client::appendMessage(QString message)
+{
+  Message *m = new Message(message, UNKOWN);
+  messages.append(m);
+  emit messageReceived();
+}
+
 void Client::login(QString userName, QString userOauth, bool database)
 {
   if (nh != nullptr)

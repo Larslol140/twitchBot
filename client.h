@@ -50,6 +50,8 @@ class Client : public QObject
     void              deleteCommand(int command_id);
     void              deleteCommand(QString command_trigger);
 
+    void              appendMessage(QString message);
+
     void              login(QString userName, QString userOauth, bool database);
 
   private slots:
