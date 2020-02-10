@@ -257,7 +257,8 @@ void Model::loadAllClients()
 
 void Model::commandHelp()
 {
-  currentClient->appendMessage(COMMAND_HELP);
+  if (currentClient != nullptr)
+    currentClient->appendMessage(COMMAND_HELP);
 }
 
 void Model::setCurrentClient(QString userName)
