@@ -32,6 +32,8 @@ const QRegularExpression RE_STATUS("(?::[\\w]+|)[:\\.]tmi\\.twitch\\.tv ([\\d]+)
 const QRegularExpression RE_PING_PONG("(PING|PONG) .+");
 const QRegularExpression RE_JOIN_LEAVE(":[\\w]+![\\w]+@[\\w]+\\.tmi\\.twitch\\.tv (JOIN|PART) #([\\w]+)");
 const QRegularExpression RE_COMMAND("\\.([\\w]+)(?: |)([\\w]*)(?: |)(.*)");
+const QRegularExpression TWITCH_API_REGEX("https:\\/\\/api\\.twitch\\.tv\\/helix\\/\\w+\?\\w+=(.+)");
+const QRegularExpression RE_ONLY_NUMBER("[\\d+]");
 
 const int LAST_MESSAGE_COUNT = 100;
 
@@ -70,5 +72,8 @@ const QString DB_ADD_CLIENT           = "INSERT INTO clients(client_name, client
                                         "VALUES (:client_name, :client_oauth);";
 const QString DB_DEL_CLIENT           = "DELETE FROM clients "
                                         "WHERE client_name = :client_name";
+
+const QString TWITCH_API_URL          = "https://api.twitch.tv/helix/";
+const QString TWITCH_API_CLIENT_ID    = "";
 
 #endif // CONFIG_H
