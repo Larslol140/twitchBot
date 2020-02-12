@@ -118,7 +118,7 @@ Message *NetworkHandler::makeLikeRecv(QString message, MESSAGE_TYPE type)
 
 bool NetworkHandler::isServerPing(Message *m)
 {
-  return m->getType() == PING_PONG && RE_PING_PONG.match(m->getMessage()).captured(1) == "PING";
+  return m->getType() == PING_PONG && m->getMessage() == "PING";
 }
 
 void NetworkHandler::handleRawMessages()
